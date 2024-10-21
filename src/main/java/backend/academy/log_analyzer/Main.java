@@ -1,4 +1,4 @@
-package backend.academy;
+package backend.academy.log_analyzer;
 
 import lombok.experimental.UtilityClass;
 
