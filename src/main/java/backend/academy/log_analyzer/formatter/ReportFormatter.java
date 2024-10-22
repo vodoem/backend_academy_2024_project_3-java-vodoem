@@ -1,32 +1,15 @@
 package backend.academy.log_analyzer.formatter;
 
+import backend.academy.log_analyzer.data.HttpStatus;
+import backend.academy.log_analyzer.data.LogReport;
 import java.util.Map;
 
 public class ReportFormatter {
-    private final long totalRequests;
-    private final Map<String, Long> mostRequestedResources;
-    private final Map<Integer, Long> responseCodeCount;
-    private final double averageResponseSize;
-    private final long percentile95ResponseSize;
-    private final double averageResponseTime; // Дополнительная статистика
-    private final long uniqueIpCount; // Дополнительная статистика
+    private final LogReport logReport;
 
-    // Конструктор принимает готовые результаты анализа
-    public ReportFormatter(
-        long totalRequests,
-        Map<String, Long> mostRequestedResources,
-        Map<Integer, Long> responseCodeCount,
-        double averageResponseSize,
-        long percentile95ResponseSize,
-        double averageResponseTime,
-        long uniqueIpCount) {
-        this.totalRequests = totalRequests;
-        this.mostRequestedResources = mostRequestedResources;
-        this.responseCodeCount = responseCodeCount;
-        this.averageResponseSize = averageResponseSize;
-        this.percentile95ResponseSize = percentile95ResponseSize;
-        this.averageResponseTime = averageResponseTime;
-        this.uniqueIpCount = uniqueIpCount;
+    // Конструктор принимает готовые результаты анализа в виде LogReport
+    public ReportFormatter(LogReport logReport) {
+        this.logReport = logReport;
     }
 
     // Форматирование отчета
@@ -37,37 +20,37 @@ public class ReportFormatter {
         report.append("### Общая информация\n\n");
         report.append("|        Метрика        |     Значение |\n");
         report.append("|:---------------------:|-------------:|\n");
-        report.append(String.format("|  Количество запросов  |       %d |\n", totalRequests));
+        report.append(String.format("|  Количество запросов  |       %d |\n", logReport.totalRequests()));
+
+        // Количество ошибочных запросов
+        report.append(String.format("|  Количество ошибочных запросов  |       %d |\n", logReport.failedRequestsCount()));
 
         // Наиболее часто запрашиваемые ресурсы
         report.append("\n### Запрашиваемые ресурсы\n\n");
         report.append("| Ресурс | Количество запросов |\n");
         report.append("|--------|---------------------|\n");
-        mostRequestedResources.forEach((resource, count) ->
+        logReport.mostRequestedResources().forEach((resource, count) ->
             report.append(String.format("| %s | %d |\n", resource, count))
         );
 
         // Наиболее часто встречающиеся коды ответа
         report.append("\n### Коды ответа\n\n");
-        report.append("| Код ответа | Количество |\n");
-        report.append("|------------|------------|\n");
-        responseCodeCount.forEach((code, count) ->
-            report.append(String.format("| %d | %d |\n", code, count))
+        report.append("| Код ответа | Имя          | Количество |\n");
+        report.append("|------------|--------------|------------|\n");
+        logReport.mostCommonResponseCodes().forEach((code, count) ->
+            report.append(String.format("| %d | %s | %d |\n", code, HttpStatus.getStatusName(code), count))
         );
 
         // Средний размер ответа сервера
         report.append("\n### Средний размер ответа сервера\n\n");
-        report.append(String.format("| Средний размер ответа | %.2f байт |\n", averageResponseSize));
+        report.append(String.format("| Средний размер ответа | %.2f байт |\n", logReport.averageResponseSize()));
 
         // 95% перцентиль размера ответа сервера
-        report.append(String.format("| 95-й перцентиль размера ответа | %d байт |\n", percentile95ResponseSize));
+        report.append(String.format("| 95-й перцентиль размера ответа | %d байт |\n", logReport.percentile95ResponseSize()));
 
-        // Дополнительная статистика 1: Среднее время обработки запроса
+        // Количество уникальных IP-адресов
         report.append("\n### Дополнительные статистики\n\n");
-        report.append(String.format("| Среднее время обработки запроса | %.2f мс |\n", averageResponseTime));
-
-        // Дополнительная статистика 2: Количество уникальных IP-адресов
-        report.append(String.format("| Количество уникальных IP-адресов | %d |\n", uniqueIpCount));
+        report.append(String.format("| Количество уникальных IP-адресов | %d |\n", logReport.uniqueIpAddresses()));
 
         // Вывод в формате Markdown или AsciiDoc
         if (format.equalsIgnoreCase("adoc")) {
@@ -86,10 +69,9 @@ public class ReportFormatter {
 
         // Конвертация таблиц
         adoc = adoc.replace("|--------|---------------------|", "|===\n| Ресурс | Количество запросов |\n|--------|---------------------|\n");
-        adoc = adoc.replace("|------------|------------|", "|===\n| Код ответа | Количество |\n|------------|------------|\n");
+        adoc = adoc.replace("|------------|--------------|------------|", "|===\n| Код ответа | Имя | Количество |\n|------------|--------------|------------|\n");
         adoc = adoc.replace("| Средний размер ответа |", "|===\n| Средний размер ответа |\n");
         adoc = adoc.replace("| 95-й перцентиль размера ответа |", "|===\n| 95-й перцентиль размера ответа |\n");
-        adoc = adoc.replace("| Среднее время обработки запроса |", "|===\n| Среднее время обработки запроса |\n");
         adoc = adoc.replace("| Количество уникальных IP-адресов |", "|===\n| Количество уникальных IP-адресов |\n");
 
         // Вставка закрывающего тега для таблиц
