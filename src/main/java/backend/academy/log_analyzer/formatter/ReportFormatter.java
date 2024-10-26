@@ -2,7 +2,7 @@ package backend.academy.log_analyzer.formatter;
 
 import backend.academy.log_analyzer.data.HttpStatus;
 import backend.academy.log_analyzer.data.LogReport;
-import java.util.Map;
+
 
 public class ReportFormatter {
     private final LogReport logReport;
