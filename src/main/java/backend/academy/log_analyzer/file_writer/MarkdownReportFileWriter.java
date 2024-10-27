@@ -8,9 +8,9 @@ public class MarkdownReportFileWriter implements ReportFileWriter{
     @Override
     public void writeReportToFile(String directoryPath, String reportContent) throws IOException {
         File directory = new File(directoryPath);
-//        if (!directory.exists()) {
-//            directory.mkdirs(); // Создаем директорию, если ее нет
-//        }
+        if (!directory.exists()) {
+            directory.mkdirs(); // Создаем директорию, если ее нет
+        }
 
         File file = new File(directory, "report.md");
         try (FileWriter writer = new FileWriter(file)) {
