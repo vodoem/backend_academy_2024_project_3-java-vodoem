@@ -6,7 +6,7 @@ import backend.academy.log_analyzer.data.LogReport;
 import backend.academy.log_analyzer.file_writer.AdocReportFileWriter;
 import backend.academy.log_analyzer.file_writer.MarkdownReportFileWriter;
 import backend.academy.log_analyzer.file_writer.ReportFileWriter;
-import backend.academy.log_analyzer.formatter.ReportFormatter;
+import backend.academy.log_analyzer.formatter.LogReportFormatter;
 import backend.academy.log_analyzer.parser.CommandLineParser;
 import backend.academy.log_analyzer.parser.LogParser;
 import backend.academy.log_analyzer.reader.LogReader;
@@ -44,8 +44,8 @@ public class Main {
 
                 LogReport logReport = logAnalyzer.analyze(logRecords, clp.filterField(), clp.filterValue(), clp.fromDate(), clp.toDate());
 
-                ReportFormatter reportFormatter = new ReportFormatter(logReport);
-                String formattedReport = reportFormatter.formatReport(clp.format());
+                LogReportFormatter logReportFormatter = new LogReportFormatter(logReport);
+                String formattedReport = logReportFormatter.formatReport(clp.format());
 
                 ReportFileWriter writer = clp.format().equalsIgnoreCase("adoc") ?
                     new AdocReportFileWriter() : new MarkdownReportFileWriter();
