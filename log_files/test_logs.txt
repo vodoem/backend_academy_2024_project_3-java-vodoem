@@ -1,0 +1,5 @@
+192.168.0.1 - user1 [25/Oct/2024:14:48:00 +0000] "GET /downloads/product_1 HTTP/1.1" 200 512 "http://example.com" "Mozilla/5.0"
+192.168.0.2 - user2 [25/Oct/2024:14:50:00 +0000] "POST /upload/file HTTP/1.1" 404 1024 "http://example.com/upload" "Mozilla/5.0"
+192.168.0.3 - user3 [25/Oct/2024:14:52:00 +0000] "GET /downloads/product_2 HTTP/1.1" 500 256 "http://example.com" "Mozilla/5.0"
+192.168.0.4 - user4 [25/Oct/2024:14:55:00 +0000] "PUT /update/info HTTP/1.1" 201 2048 "http://example.com/update" "Mozilla/5.0"
+192.168.0.5 - user5 [25/Oct/2024:15:00:00 +0000] "DELETE /delete/item HTTP/1.1" 403 128 "http://example.com/delete" "Mozilla/5.0"
