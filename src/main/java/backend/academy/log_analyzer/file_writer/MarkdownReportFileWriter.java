@@ -16,5 +16,6 @@ public class MarkdownReportFileWriter implements ReportFileWriter{
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(reportContent); // Запись в файл
         }
+        System.out.println("Результаты были занесены в файл " + directoryPath + "/report.md");
     }
 }
