@@ -1,12 +1,14 @@
 package backend.academy.log_analyzer.parser;
 
 import lombok.Getter;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class CommandLineParser {
     private final String[] args;
     @Getter private String path;
-    @Getter private String fromDate;
-    @Getter private String toDate;
+    @Getter private ZonedDateTime fromDate;
+    @Getter private ZonedDateTime toDate;
     @Getter private String format;
     @Getter private String filterField;
     @Getter private String filterValue;
@@ -16,23 +18,23 @@ public class CommandLineParser {
         this.format = "markdown"; // Значение по умолчанию
     }
     public boolean parse() {
-        if (args.length < 2 || !args[0].equals("--path")) {
+        if (args.length < 2 || !args[1].equals("--path")) {
             System.err.println("Использование: analyzer --path <путь> [--from <дата>] [--to <дата>] [--format <markdown|adoc>] [--filter-field <field>] [--filter-value <value>]");
             return false;
         }
 
-        path = args[1];
+        path = args[2];
 
-        for (int i = 2; i < args.length; i++) {
+        for (int i = 3; i < args.length; i++) {
             switch (args[i]) {
                 case "--from":
                     if (i + 1 < args.length) {
-                        fromDate = args[++i];
+                        fromDate = parseDate(args[++i]);
                     }
                     break;
                 case "--to":
                     if (i + 1 < args.length) {
-                        toDate = args[++i];
+                        toDate = parseDate(args[++i]);
                     }
                     break;
                 case "--format":
@@ -70,6 +72,13 @@ public class CommandLineParser {
             return value.substring(1, value.length() - 1);
         }
         return value;
+    }
+
+    private static ZonedDateTime parseDate(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) {
+            return null;
+        }
+        return ZonedDateTime.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
 }
