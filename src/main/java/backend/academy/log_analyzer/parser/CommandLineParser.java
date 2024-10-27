@@ -1,6 +1,8 @@
 package backend.academy.log_analyzer.parser;
 
 import lombok.Getter;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -78,7 +80,7 @@ public class CommandLineParser {
         if (dateStr == null || dateStr.isEmpty()) {
             return null;
         }
-        return ZonedDateTime.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        return LocalDate.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay(ZoneId.systemDefault());
     }
 
 }

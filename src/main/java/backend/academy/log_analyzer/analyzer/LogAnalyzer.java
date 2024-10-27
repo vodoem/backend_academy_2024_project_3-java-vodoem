@@ -2,7 +2,6 @@ package backend.academy.log_analyzer.analyzer;
 
 import backend.academy.log_analyzer.data.LogRecord;
 import backend.academy.log_analyzer.data.LogReport;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,7 @@ public class LogAnalyzer {
             case "method":
                 return record.method().startsWith(filterValue); // Фильтрация по методу HTTP-запроса
             case "agent":
-                return record.userAgent().contains(filterValue); // Фильтрация по user-agent
+                return record.userAgent().matches(filterValue.replace("*", ".*")); // Фильтрация по user-agent
             case "ip":
                 return record.ipAddress().equals(filterValue); // Фильтрация по IP-адресу
             case "status":
