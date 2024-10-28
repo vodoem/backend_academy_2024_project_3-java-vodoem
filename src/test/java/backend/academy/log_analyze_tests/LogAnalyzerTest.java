@@ -30,8 +30,8 @@ public class LogAnalyzerTest {
     @Test
     void testAnalyzeLogsWithFilter() {
         Stream<LogRecord> logRecords = Stream.of(
-            new LogRecord("127.0.0.1", "user1", ZonedDateTime.now(), "GET", "/index.html", 200, 1000, "-", "Mozilla/5.0"),
-            new LogRecord("127.0.0.2", "user2", ZonedDateTime.now(), "POST", "/upload", 404, 500, "-", "Chrome")
+            new LogRecord("127.0.0.1", "user1", ZonedDateTime.now(), "GET", "/index.html", 200, 1000, "Mozilla/5.0"),
+            new LogRecord("127.0.0.2", "user2", ZonedDateTime.now(), "POST", "/upload", 404, 500, "Chrome")
         );
 
         LogReport logReport = logAnalyzer.analyze(logRecords, "method", "GET", null, null);
@@ -43,8 +43,8 @@ public class LogAnalyzerTest {
     @Test
     void testAnalyzeLogsWithoutFilter() {
         Stream<LogRecord> logRecords = Stream.of(
-            new LogRecord("127.0.0.1", "user1", ZonedDateTime.now(), "GET", "/index.html", 200, 1000, "-", "Mozilla/5.0"),
-            new LogRecord("127.0.0.2", "user2", ZonedDateTime.now(), "POST", "/upload", 404, 500, "-", "Chrome")
+            new LogRecord("127.0.0.1", "user1", ZonedDateTime.now(), "GET", "/index.html", 200, 1000, "Mozilla/5.0"),
+            new LogRecord("127.0.0.2", "user2", ZonedDateTime.now(), "POST", "/upload", 404, 500, "Chrome")
         );
 
         LogReport logReport = logAnalyzer.analyze(logRecords, null, null, null, null);

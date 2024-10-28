@@ -1,6 +1,5 @@
 package backend.academy.log_analyzer.data;
 
-
 import java.time.ZonedDateTime;
 
 public record LogRecord(
@@ -11,7 +10,6 @@ public record LogRecord(
     String resource,
     int status,
     long responseSize,
-    String referer,
     String userAgent
 ) {
 }

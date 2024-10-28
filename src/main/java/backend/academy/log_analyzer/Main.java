@@ -10,25 +10,23 @@ import backend.academy.log_analyzer.formatter.LogReportFormatter;
 import backend.academy.log_analyzer.parser.CommandLineParser;
 import backend.academy.log_analyzer.parser.LogParser;
 import backend.academy.log_analyzer.reader.LogReader;
-import lombok.experimental.UtilityClass;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.Stream;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class Main {
-
-    private static final String OUTPUT_DIRECTORY = "reports";
 
     public static void main(String[] args) {
 
         CommandLineParser clp = new CommandLineParser(args);
 
-        if(clp.parse()){
+        if (clp.parse()) {
 
             LogReader logReader = new LogReader();
 
-            try(Stream<String> stream = logReader.readLogs(clp.path())){
+            try (Stream<String> stream = logReader.readLogs(clp.path())) {
 
                 LogAnalyzer logAnalyzer = new LogAnalyzer();
                 LogParser logParser = new LogParser();
@@ -42,15 +40,16 @@ public class Main {
                     }
                 }).filter(Objects::nonNull);
 
-                LogReport logReport = logAnalyzer.analyze(logRecords, clp.filterField(), clp.filterValue(), clp.fromDate(), clp.toDate());
+                LogReport logReport =
+                    logAnalyzer.analyze(logRecords, clp.filterField(), clp.filterValue(), clp.fromDate(), clp.toDate());
 
                 LogReportFormatter logReportFormatter = new LogReportFormatter(logReport);
                 String formattedReport = logReportFormatter.formatReport(clp.format());
 
-                ReportFileWriter writer = clp.format().equalsIgnoreCase("adoc") ?
-                    new AdocReportFileWriter() : new MarkdownReportFileWriter();
-                writer.writeReportToFile(OUTPUT_DIRECTORY, formattedReport);
-            } catch (IOException e) {
+                ReportFileWriter writer = "adoc".equalsIgnoreCase(clp.format())
+                    ? new AdocReportFileWriter() : new MarkdownReportFileWriter();
+                writer.writeReportToFile(formattedReport);
+            } catch (IOException | InterruptedException e) {
                 System.err.println("Ошибка чтения файла: " + e.getMessage());
             }
 

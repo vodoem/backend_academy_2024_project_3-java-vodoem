@@ -6,7 +6,7 @@ public class LogReportFormatter {
 
     private final LogReport logReport;
 
-    public LogReportFormatter(LogReport logReport){
+    public LogReportFormatter(LogReport logReport) {
         this.logReport = logReport;
     }
 
