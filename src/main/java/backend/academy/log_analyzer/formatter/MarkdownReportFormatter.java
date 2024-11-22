@@ -1,7 +1,7 @@
 package backend.academy.log_analyzer.formatter;
 
-import backend.academy.log_analyzer.data.HttpStatus;
 import backend.academy.log_analyzer.data.LogReport;
+import org.springframework.http.HttpStatus;
 
 public class MarkdownReportFormatter implements ReportFormatter {
     private static final String METRIC_VALUE_FORMAT =
@@ -49,7 +49,8 @@ public class MarkdownReportFormatter implements ReportFormatter {
         report.append("|------------|--------------|------------|").append(System.lineSeparator());
         logReport.mostCommonResponseCodes().forEach((code, count) ->
             report.append(
-                String.format("| %d | %s | %d |" + System.lineSeparator(), code, HttpStatus.getStatusName(code), count))
+                String.format("| %d | %s | %d |" + System.lineSeparator(), code,
+                    HttpStatus.valueOf(code).getReasonPhrase(), count))
         );
 
         return report.toString();

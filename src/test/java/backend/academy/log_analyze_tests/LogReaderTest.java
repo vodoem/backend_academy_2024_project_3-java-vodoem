@@ -11,16 +11,26 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class LogReaderTest {
     @Test
     void testReadFromLocalPath() throws IOException, InterruptedException {
-        LogReader logReader = new LogReader();
-        Stream<String> logLines = logReader.readLogs("log_files/test_logs.txt");
+        // Arrange
+        LogReader logReader = LogReader.getReader("log_files/test_logs.txt");
+
+        // Act
+        Stream<String> logLines = logReader.readLogs();
+
+        // Assert
         assertNotNull(logLines, "Log lines should not be null");
         assertEquals(5, logLines.count(), "Should read 3 lines from log file");
     }
 
     @Test
     void testReadFromUrl() throws IOException, InterruptedException {
-        LogReader logReader = new LogReader();
-        Stream<String> logLines = logReader.readLogs("https://raw.githubusercontent.com/elastic/examples/master/Common%20Data%20Formats/nginx_logs/nginx_logs");
+        // Arrange
+        LogReader logReader = LogReader.getReader("https://raw.githubusercontent.com/elastic/examples/master/Common%20Data%20Formats/nginx_logs/nginx_logs");
+
+        // Act
+        Stream<String> logLines = logReader.readLogs();
+
+        // Assert
         assertNotNull(logLines, "Log lines should not be null");
         assertTrue(logLines.findAny().isPresent(), "Should read lines from URL");
     }

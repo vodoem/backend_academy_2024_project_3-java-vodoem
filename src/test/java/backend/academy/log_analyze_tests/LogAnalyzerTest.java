@@ -29,32 +29,39 @@ public class LogAnalyzerTest {
 
     @Test
     void testAnalyzeLogsWithFilter() {
+        //Arrange
         Stream<LogRecord> logRecords = Stream.of(
             new LogRecord("127.0.0.1", "user1", ZonedDateTime.now(), "GET", "/index.html", 200, 1000, "Mozilla/5.0"),
             new LogRecord("127.0.0.2", "user2", ZonedDateTime.now(), "POST", "/upload", 404, 500, "Chrome")
         );
 
+        //Act
         LogReport logReport = logAnalyzer.analyze(logRecords, "method", "GET", null, null);
 
+        //Assert
         assertNotNull(logReport, "Log report should not be null");
         assertEquals(1, logReport.totalRequests(), "Total requests should match filtered requests");
     }
 
     @Test
     void testAnalyzeLogsWithoutFilter() {
+        // Arrange
         Stream<LogRecord> logRecords = Stream.of(
             new LogRecord("127.0.0.1", "user1", ZonedDateTime.now(), "GET", "/index.html", 200, 1000, "Mozilla/5.0"),
             new LogRecord("127.0.0.2", "user2", ZonedDateTime.now(), "POST", "/upload", 404, 500, "Chrome")
         );
 
+        // Act
         LogReport logReport = logAnalyzer.analyze(logRecords, null, null, null, null);
 
+        // Assert
         assertNotNull(logReport, "Log report should not be null");
         assertEquals(2, logReport.totalRequests(), "Total requests should match all logs");
     }
 
     @Test
     void testAverageResponseSize() {
+        // Arrange
         Stream<String> logStream = createLogStream();
         Stream<LogRecord> logRecords = logStream.map(logLine -> {
             try {
@@ -65,14 +72,17 @@ public class LogAnalyzerTest {
             }
         }).filter(Objects::nonNull);
 
+        // Act
         LogReport logReport = logAnalyzer.analyze(logRecords, null, null, null, null);
         double averageSize = logReport.averageResponseSize();
 
+        // Assert
         assertThat(averageSize).isEqualTo(793.6); // (512 + 1024 + 256 + 2048 + 128) / 5
     }
 
     @Test
     void test95thPercentileResponseSize() {
+        // Arrange
         Stream<String> logStream = createLogStream();
         Stream<LogRecord> logRecords = logStream.map(logLine -> {
             try {
@@ -83,14 +93,17 @@ public class LogAnalyzerTest {
             }
         }).filter(Objects::nonNull);
 
+        // Act
         LogReport logReport = logAnalyzer.analyze(logRecords, null, null, null, null);
         double percentile95 = logReport.percentile95ResponseSize();
 
+        // Assert
         assertThat(percentile95).isEqualTo(2048);  // 95-й перцентиль для значений [128, 256, 512, 1024, 2048]
     }
 
     @Test
     void testMostRequestedResources() {
+        // Arrange
         Stream<String> logStream = createLogStream();
         Stream<LogRecord> logRecords = logStream.map(logLine -> {
             try {
@@ -101,9 +114,11 @@ public class LogAnalyzerTest {
             }
         }).filter(Objects::nonNull);
 
+        // Act
         LogReport logReport = logAnalyzer.analyze(logRecords, null, null, null, null);
         Map<String, Long> mostRequestedResources = logReport.mostRequestedResources();
 
+        // Assert
         assertThat(mostRequestedResources).isEqualTo(Map.of(
             "/downloads/product_1 HTTP/1.1", 1L,
             "/upload/file HTTP/1.1", 1L,
@@ -115,6 +130,7 @@ public class LogAnalyzerTest {
 
     @Test
     void testMostCommonResponseCodes() {
+        // Arrange
         Stream<String> logStream = createLogStream();
         Stream<LogRecord> logRecords = logStream.map(logLine -> {
             try {
@@ -125,9 +141,11 @@ public class LogAnalyzerTest {
             }
         }).filter(Objects::nonNull);
 
+        // Act
         LogReport logReport = logAnalyzer.analyze(logRecords, null, null, null, null);
         Map<Integer, Long> mostCommonResponseCodes = logReport.mostCommonResponseCodes();
 
+        // Assert
         assertThat(mostCommonResponseCodes).isEqualTo(Map.of(
             200, 1L,
             404, 1L,
@@ -139,6 +157,7 @@ public class LogAnalyzerTest {
 
     @Test
     void testFilterByDate() {
+        // Arrange
         Stream<String> logStream = createLogStream();
         Stream<LogRecord> logRecords = logStream.map(logLine -> {
             try {
@@ -150,12 +169,15 @@ public class LogAnalyzerTest {
         }).filter(Objects::nonNull);
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
+        // Act
         LogReport logReport = logAnalyzer.analyze(logRecords, null, null,
             ZonedDateTime.parse("25/Oct/2024:14:50:00 +0000", dateTimeFormatter),
             ZonedDateTime.parse("25/Oct/2024:14:56:00 +0000", dateTimeFormatter)
         );
 
         Long filteredLogsSize = logReport.totalRequests();
+
+        // Assert
         assertThat(filteredLogsSize).isEqualTo(3L);
     }
 

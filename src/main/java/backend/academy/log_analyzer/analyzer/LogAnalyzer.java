@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public class LogAnalyzer {
     private static final double RESPONSE_SIZE_PERCENTILE = 0.95;
     private static final int HTTP_STATUS_OK_MIN = 200;
-    private static final int HTTP_STATUS_OK_MAX = 300;
+    private static final int HTTP_STATUS_OK_MAX = 299;
 
     public LogReport analyze(
         Stream<LogRecord> logRecords,

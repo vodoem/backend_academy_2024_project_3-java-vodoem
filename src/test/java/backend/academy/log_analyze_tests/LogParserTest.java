@@ -10,9 +10,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class LogParserTest {
     @Test
     void testParseValidLogLine() {
+        // Arrange
         LogParser logParser = new LogParser();
         String logLine = "127.0.0.1 - user [10/Oct/2023:13:55:36 +0000] \"GET /index.html HTTP/1.1\" 200 1234 \"-\" \"Mozilla/5.0\"";
+
+        // Act
         LogRecord record = logParser.parse(logLine);
+
+        // Assert
         assertNotNull(record, "Log record should not be null");
         assertEquals("127.0.0.1", record.ipAddress());
         assertEquals("user", record.user());
@@ -25,8 +30,14 @@ public class LogParserTest {
 
     @Test
     void testParseInvalidLogLine() {
+        // Arrange
         LogParser logParser = new LogParser();
         String invalidLogLine = "Invalid log format";
-        assertThrows(IllegalArgumentException.class, () -> logParser.parse(invalidLogLine));
+
+        // Act
+        Throwable throwable = assertThrows(IllegalArgumentException.class, () -> logParser.parse(invalidLogLine));
+
+        // Assert
+        assertEquals("Неверный формат лог строки", throwable.getMessage());
     }
 }

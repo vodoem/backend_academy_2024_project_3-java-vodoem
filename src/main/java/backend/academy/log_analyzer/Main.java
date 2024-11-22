@@ -24,9 +24,7 @@ public class Main {
 
         if (clp.parse()) {
 
-            LogReader logReader = new LogReader();
-
-            try (Stream<String> stream = logReader.readLogs(clp.path())) {
+            try (Stream<String> stream = LogReader.getReader(clp.path()).readLogs()) {
 
                 LogAnalyzer logAnalyzer = new LogAnalyzer();
                 LogParser logParser = new LogParser();

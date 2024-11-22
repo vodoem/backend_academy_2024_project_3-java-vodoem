@@ -1,7 +1,7 @@
 package backend.academy.log_analyzer.formatter;
 
-import backend.academy.log_analyzer.data.HttpStatus;
 import backend.academy.log_analyzer.data.LogReport;
+import org.springframework.http.HttpStatus;
 
 public class AdocReportFormatter implements ReportFormatter {
     private static final String HEADER = "|===";
@@ -49,7 +49,8 @@ public class AdocReportFormatter implements ReportFormatter {
         report.append("| Код ответа | Имя | Количество").append(System.lineSeparator());
         logReport.mostCommonResponseCodes().forEach((code, count) ->
             report.append(
-                String.format("| %d | %s | %d" + System.lineSeparator(), code, HttpStatus.getStatusName(code), count))
+                String.format("| %d | %s | %d" + System.lineSeparator(), code,
+                    HttpStatus.valueOf(code).getReasonPhrase(), count))
         );
         report.append(HEADER_DIVIDER);
 
