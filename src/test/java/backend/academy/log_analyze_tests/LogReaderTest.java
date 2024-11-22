@@ -23,6 +23,19 @@ public class LogReaderTest {
     }
 
     @Test
+    void testReadFromLocalPathWithTemplate() throws IOException, InterruptedException {
+        // Arrange
+        LogReader logReader = LogReader.getReader("log_files/test*");
+
+        // Act
+        Stream<String> logLines = logReader.readLogs();
+
+        // Assert
+        assertNotNull(logLines, "Log lines should not be null");
+        assertEquals(5, logLines.count(), "Should read 3 lines from log file");
+    }
+
+    @Test
     void testReadFromUrl() throws IOException, InterruptedException {
         // Arrange
         LogReader logReader = LogReader.getReader("https://raw.githubusercontent.com/elastic/examples/master/Common%20Data%20Formats/nginx_logs/nginx_logs");
